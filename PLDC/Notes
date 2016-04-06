@@ -1,0 +1,27 @@
+Tokens:
+	+
+	-
+	/
+	*
+	e
+	^
+	ln
+	t
+	s
+	Polt
+	Pols
+	laplace
+	show
+Polynomial Equation:	
+	[-+]?[𝜶x?^?𝜷?(+|-)]*[𝜶x?^?𝜷?]
+	(^|[ \t])(([-+]?(\d+|\.\d+|\d+\.\d*))([x]?[^]?\d*)([+]|[-]))*([-+]?(\d+|\.\d+|\d+\.\d*))
+		Explanation
+			(^|[ \t])
+				The begining of the string or a tab space
+			([-+]?( \d + | \. \d + | \d + \. \d*) )
+				The expression can start with a + or - sign followed by at least one 0-9 number 
+				or a '.'followed by at least one 0-9 number or at least one 0-9 number followed 
+				by a '.' followed by any number of 0-9 numbers 
+			([x]?[^]?\d*)
+				The expression may have an 'x' followed by an '^' and a number
+				

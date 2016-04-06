@@ -1,0 +1,12 @@
+Regular expressions can be expressed in just a few rules.
+
+^	Matches the beginning of a string
+$	Matches the end of a string
+.	Matches any single character
+*	Matches any count (0-n) of the previous character
++	Matches any count, but at least 1 of the previous character
+[...]	Matches any character of a set of characters
+[^...]	Matches any character *NOT* a member of the set of characters following the ^.
+(...)	Groups a set of characters into a subSpec.
+
+https://www.tcl.tk/man/tcl8.5/tutorial/Tcl20a.html
