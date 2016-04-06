@@ -12,8 +12,7 @@ Tokens:
 	Pols
 	laplace
 	show
-Polynomial Equation:	
-	[-+]?[𝜶x?^?𝜷?(+|-)]*[𝜶x?^?𝜷?]
+Polynomial Equation:
 	(^|[ \t])(([-+]?(\d+|\.\d+|\d+\.\d*))([x]?[^]?\d*)([+]|[-]))*([-+]?(\d+|\.\d+|\d+\.\d*))
 		Explanation
 			(^|[ \t])
