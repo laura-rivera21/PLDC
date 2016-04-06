@@ -13,14 +13,37 @@ Tokens:
 	laplace
 	show
 Polynomial Equation:
-	(^|[ \t])(([-+]?(\d+|\.\d+|\d+\.\d*))([x]?[^]?\d*)([+]|[-]))*([-+]?(\d+|\.\d+|\d+\.\d*))
+	(^|[ \t])(([-+]?(\d+|\.\d+|\d+\.\d*))(([x]?[^]?\d*)|[x])([+]|[-]))*([-+]?(\d+|\.\d+|\d+\.\d*))
 		Explanation
 			(^|[ \t])
 				The begining of the string or a tab space
 			([-+]?( \d + | \. \d + | \d + \. \d*) )
-				The expression can start with a + or - sign followed by at least one 0-9 number 
-				or a '.'followed by at least one 0-9 number or at least one 0-9 number followed 
-				by a '.' followed by any number of 0-9 numbers 
+				The expression can start with a + or - sign followed by at least one 0-9 number
+				or a '.'followed by at least one 0-9 number or at least one 0-9 number followed
+				by a '.' followed by any number of 0-9 numbers
 			([x]?[^]?\d*)
 				The expression may have an 'x' followed by an '^' and a number
-				
+
+
+Parser Grammar
+
+Polynomial Equation = expression
+
+expression: expression + term
+            expression - term
+            term
+
+term: factor * variable
+      factor * variable ^ exponent
+      variable ^ exponent
+      variable
+      factor
+
+factor: + NUMBER
+        - NUMBER
+
+variable: 't'
+          's'
+
+exponent: NUMBER
+
