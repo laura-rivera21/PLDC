@@ -40,15 +40,14 @@ t_LAPLACE = r'(?i)laplace'
 t_SHOW = r'(?i)show'
 t_POLT = r'(?i)polt'
 t_POLS = r'(?i)pols'
-t_VART = 't'
+#t_VART = 't'
 t_VARS = 's'
 
 # A regular expression rule with some action code
 def t_NUMBER(t):
-    r'\d'
+    r'\d+'
     t.value = int(t.value)
     return t
-
 
 # Define a rule so we can track line numbers
 def t_newline(t):
@@ -70,17 +69,17 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''9t^2+3t+5'''
+data = '''9s+3s+61'''
 
 # Give the lexer some input
 lexer.input(data)
 
 # Tokenize
-while True:
-    tok = lexer.token()
-    if not tok:
-        break      # No more input
-    print(tok.type, tok.value)
+#while True:
+tok = lexer.token()
+   # if not tok:
+   #     break      # No more input
+    #print(tok.type, tok.value)
 
 # Yacc test
 
@@ -92,7 +91,7 @@ import ply.yacc as yacc
 ############EXPRESSION###############
 def p_expression_plus(p):
     'expression : expression PLUS term'
-    p[0] = p[1] + p[3]
+    p[0] = str(p[1])  + str(p[3])
 
 def p_expression_minus(p):
     'expression : expression MINUS term'
@@ -104,15 +103,16 @@ def p_expression_term(p):
 
 ##############TERM##################
 def p_term_times(p):
-    'term : factor TIMES variable'
-    p[0] = p[1] * p[3]
+    'term : factor variable'
+    mystring = str(p[1])
+    p[0] = mystring + p[2]
 
 def p_term_times_2(p):
-    'term : factor TIMES variable RAISED exponent'
+    'term : factor TIMES variable RAISED factor'
     p[0] = p[1] * p[3] ^ p[5]
 
 def p_term_var_exp(p):
-    'term : variable RAISED exponent'
+    'term : variable RAISED factor'
     p[0] = p[1] ^ p[3]
 
 def p_term_var(p):
@@ -156,11 +156,6 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
 
-while True:
-   try:
-       s = '9s^2+3s+5'
-   except EOFError:
-       break
-   if not s: continue
-   result = parser.parse(s)
-   print(result)
+
+result = parser.parse(data)
+print(result)
