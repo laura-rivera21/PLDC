@@ -1,17 +1,15 @@
 '''
 Created on Mar 25, 2016
-
 @author: Laura
 '''
 import ply.lex as lex
 
-# lex.py - tokenizer
+# PLDClex.py - tokenizer
 
 # list of tokens names
-tokens = (
-          'POLT', 
-          'POLS', 
-          'LAPLACE', 
+tokens = ('POLT',
+          'POLS',
+          'LAPLACE',
           'SHOW',
           'NUMBER',
           'PLUS',
@@ -20,7 +18,9 @@ tokens = (
           'DIVIDE',
           'LPAREN',
           'RPAREN',
-          'EXPONENT')
+          'RAISED',
+          'VART',
+          'VARS')
 
 # reserved words
 reserved = {
@@ -35,16 +35,18 @@ t_TIMES   = r'\*'
 t_DIVIDE  = r'/'
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
-t_EXPONENT = r'\^'
+t_RAISED = r'\^'
 t_LAPLACE = r'(?i)laplace'
 t_SHOW = r'(?i)show'
 t_POLT = r'(?i)polt'
 t_POLS = r'(?i)pols'
+#t_VART = 't'
+t_VARS = 's'
 
 # A regular expression rule with some action code
 def t_NUMBER(t):
-    r'\d'
-    t.value = int(t.value)    
+    r'\d+'
+    t.value = int(t.value)
     return t
 
 # Define a rule so we can track line numbers
@@ -67,79 +69,93 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''
-LapLaCe(3+4)*8^2
-'''
+data = '''9s+3s+61'''
 
 # Give the lexer some input
 lexer.input(data)
 
 # Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input
-    print(tok.type, tok.value)
-    
-    
-# Parsing rules
+#while True:
+tok = lexer.token()
+   # if not tok:
+   #     break      # No more input
+    #print(tok.type, tok.value)
 
-precedence = (
-    ('left','PLUS','MINUS'),
-    ('left','TIMES','DIVIDE'),
-    ('right','UMINUS'),
-    )
-
-# dictionary of names
-names = { }
-
-def p_statement_assign(t):
-    'statement : NAME EQUALS expression'
-    names[t[1]] = t[3]
-
-def p_statement_expr(t):
-    'statement : expression'
-    print(t[1])
-
-def p_expression_binop(t):
-    '''expression : expression PLUS expression
-                  | expression MINUS expression
-                  | expression TIMES expression
-                  | expression DIVIDE expression'''
-    if t[2] == '+'  : t[0] = t[1] + t[3]
-    elif t[2] == '-': t[0] = t[1] - t[3]
-    elif t[2] == '*': t[0] = t[1] * t[3]
-    elif t[2] == '/': t[0] = t[1] / t[3]
-
-def p_expression_uminus(t):
-    'expression : MINUS expression %prec UMINUS'
-    t[0] = -t[2]
-
-def p_expression_group(t):
-    'expression : LPAREN expression RPAREN'
-    t[0] = t[2]
-
-def p_expression_number(t):
-    'expression : NUMBER'
-    t[0] = t[1]
-
-def p_expression_name(t):
-    'expression : NAME'
-    try:
-        t[0] = names[t[1]]
-    except LookupError:
-        print("Undefined name '%s'" % t[1])
-        t[0] = 0
-
-def p_error(t):
-    print("Syntax error at '%s'" % t.value)
+# Yacc test
 
 import ply.yacc as yacc
+
+# Get the token map from the lexer.  This is required.
+#from PLDClex import tokens
+
+############EXPRESSION###############
+def p_expression_plus(p):
+    'expression : expression PLUS term'
+    p[0] = str(p[1])  + str(p[3])
+
+def p_expression_minus(p):
+    'expression : expression MINUS term'
+    p[0] = p[1] - p[3]
+
+def p_expression_term(p):
+    'expression : term'
+    p[0] = p[1]
+
+##############TERM##################
+def p_term_times(p):
+    'term : factor variable'
+    mystring = str(p[1])
+    p[0] = mystring + p[2]
+
+def p_term_times_2(p):
+    'term : factor TIMES variable RAISED factor'
+    p[0] = p[1] * p[3] ^ p[5]
+
+def p_term_var_exp(p):
+    'term : variable RAISED factor'
+    p[0] = p[1] ^ p[3]
+
+def p_term_var(p):
+    'term : variable'
+    p[0] = p[1]
+
+def p_term_fac(p):
+    'term : factor'
+    p[0] = p[1]
+
+##############FACTOR################
+def p_factor_num(p):
+    'factor : NUMBER'
+    p[0] = p[1]
+
+def p_factor_expr(p):
+    'factor : LPAREN expression RPAREN'
+    p[0] = p[2]
+
+
+#############VARIABLE###############
+def p_variable_t(p):
+    'variable : VART'
+    p[0]=p[1]
+
+def p_variable_s(p):
+    'variable : VARS'
+    p[0]=p[1]
+
+
+
+#############EXPONENT###############
+def p_exponent(p):
+    'exponent : NUMBER'
+    p[0]=p[1]
+
+# Error rule for syntax errors
+def p_error(p):
+    print("Syntax error in input!")
+
+# Build the parser
 parser = yacc.yacc()
 
-while True:
-    try:
-        s = input('calc > ')   # Use raw_input on Python 2
-    except EOFError:
-        break
-    parser.parse(s)
+
+result = parser.parse(data)
+print(result)
