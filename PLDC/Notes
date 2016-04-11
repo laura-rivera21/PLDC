@@ -1,17 +1,6 @@
 Tokens:
-	+
-	-
-	/
-	*
-	e
-	^
-	ln
-	t
-	s
-	Polt
-	Pols
-	laplace
-	show
+	+   -   /   *   e   ^   ln  t   s   Polt    Pols    laplace show
+
 Polynomial Equation:
 	(^|[ \t])(([-+]?(\d+|\.\d+|\d+\.\d*))(([x]?[^]?\d*)|[x])([+]|[-]))*([-+]?(\d+|\.\d+|\d+\.\d*))
 		Explanation
@@ -47,3 +36,10 @@ variable: 't'
 
 exponent: NUMBER
 
+def p_variable_t2(p):
+    '''variable : t '''
+    p[0]=p[1]
+
+def p_variable_s2(p):
+    '''variable : s '''
+    p[0]=p[1]
