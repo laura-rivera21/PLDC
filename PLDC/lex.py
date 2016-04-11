@@ -1,7 +1,3 @@
-'''
-Created on Mar 25, 2016
-@author: Laura
-'''
 import ply.lex as lex
 
 # PLDClex.py - tokenizer
@@ -91,63 +87,64 @@ import ply.yacc as yacc
 ############EXPRESSION###############
 def p_expression_plus(p):
     'expression : expression PLUS term'
-    p[0] = str(p[1])  + str(p[3])
+    p[0] = str(p[1]) + '+' + str(p[3])
 
 def p_expression_minus(p):
     'expression : expression MINUS term'
-    p[0] = p[1] - p[3]
+    p[0] = str(p[1]) + '-' + str(p[3])
 
 def p_expression_term(p):
     'expression : term'
-    p[0] = p[1]
+    p[0] = str(p[1])
 
 ##############TERM##################
 def p_term_times(p):
     'term : factor variable'
-    mystring = str(p[1])
-    p[0] = mystring + p[2]
+    p[0] = str(p[1]) + str(p[2])
 
 def p_term_times_2(p):
     'term : factor TIMES variable RAISED factor'
-    p[0] = p[1] * p[3] ^ p[5]
+    p[0] = str(p[1]) + '*' + str(p[3]) + '^' + str(p[5])
 
 def p_term_var_exp(p):
     'term : variable RAISED factor'
-    p[0] = p[1] ^ p[3]
+    p[0] = str(p[1]) + '^' + str(p[3])
 
 def p_term_var(p):
     'term : variable'
-    p[0] = p[1]
+    p[0] = str(p[1])
 
 def p_term_fac(p):
     'term : factor'
-    p[0] = p[1]
+    p[0] = str(p[1])
 
 ##############FACTOR################
 def p_factor_num(p):
     'factor : NUMBER'
-    p[0] = p[1]
+    p[0] = str(p[1])
 
 def p_factor_expr(p):
     'factor : LPAREN expression RPAREN'
-    p[0] = p[2]
-
+    p[0] = '(' + str(p[2]) + ')'
 
 #############VARIABLE###############
 def p_variable_t(p):
     'variable : VART'
-    p[0]=p[1]
+    p[0] = str(p[1])
 
 def p_variable_s(p):
     'variable : VARS'
-    p[0]=p[1]
-
-
+    p[0] = str(p[1])
 
 #############EXPONENT###############
 def p_exponent(p):
     'exponent : NUMBER'
-    p[0]=p[1]
+    p[0] = str(p[1])
+
+#############FUNCTION###############
+def p_function(p):
+    'function : LAPLACE expression'
+    p[0] = str(p[1]) + str(p[2])
 
 # Error rule for syntax errors
 def p_error(p):
@@ -155,7 +152,6 @@ def p_error(p):
 
 # Build the parser
 parser = yacc.yacc()
-
 
 result = parser.parse(data)
 print(result)
