@@ -1,13 +1,15 @@
 '''
 Created on Mar 25, 2016
+
 @author: Laura
 '''
 import ply.lex as lex
 
-# PLDClex.py - tokenizer
+# lex.py - tokenizer
 
 # list of tokens names
-tokens = ('POLT',
+tokens = (
+          'POLT',
           'POLS',
           'LAPLACE',
           'SHOW',
@@ -18,9 +20,7 @@ tokens = ('POLT',
           'DIVIDE',
           'LPAREN',
           'RPAREN',
-          'EXPONENT',
-          'VART',
-          'VARS')
+          'EXPONENT')
 
 # reserved words
 reserved = {
@@ -40,8 +40,6 @@ t_LAPLACE = r'(?i)laplace'
 t_SHOW = r'(?i)show'
 t_POLT = r'(?i)polt'
 t_POLS = r'(?i)pols'
-t_VART = r't'
-t_VARS = r's'
 
 # A regular expression rule with some action code
 def t_NUMBER(t):
@@ -69,7 +67,9 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''laplace(-9s^2+3s-5)'''
+data = '''
+LapLaCe(3+4)*8^2
+'''
 
 # Give the lexer some input
 lexer.input(data)
@@ -80,3 +80,66 @@ while True:
     if not tok:
         break      # No more input
     print(tok.type, tok.value)
+
+
+# Parsing rules
+
+precedence = (
+    ('left','PLUS','MINUS'),
+    ('left','TIMES','DIVIDE'),
+    ('right','UMINUS'),
+    )
+
+# dictionary of names
+names = { }
+
+def p_statement_assign(t):
+    'statement : NAME EQUALS expression'
+    names[t[1]] = t[3]
+
+def p_statement_expr(t):
+    'statement : expression'
+    print(t[1])
+
+def p_expression_binop(t):
+    '''expression : expression PLUS expression
+                  | expression MINUS expression
+                  | expression TIMES expression
+                  | expression DIVIDE expression'''
+    if t[2] == '+'  : t[0] = t[1] + t[3]
+    elif t[2] == '-': t[0] = t[1] - t[3]
+    elif t[2] == '*': t[0] = t[1] * t[3]
+    elif t[2] == '/': t[0] = t[1] / t[3]
+
+def p_expression_uminus(t):
+    'expression : MINUS expression %prec UMINUS'
+    t[0] = -t[2]
+
+def p_expression_group(t):
+    'expression : LPAREN expression RPAREN'
+    t[0] = t[2]
+
+def p_expression_number(t):
+    'expression : NUMBER'
+    t[0] = t[1]
+
+def p_expression_name(t):
+    'expression : NAME'
+    try:
+        t[0] = names[t[1]]
+    except LookupError:
+        print("Undefined name '%s'" % t[1])
+        t[0] = 0
+
+def p_error(t):
+    print("Syntax error at '%s'" % t.value)
+
+import ply.yacc as yacc
+parser = yacc.yacc()
+
+while True:
+    try:
+        s = input('calc > ')   # Use raw_input on Python 2
+    except EOFError:
+        break
+    parser.parse(s)
