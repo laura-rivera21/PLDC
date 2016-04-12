@@ -36,7 +36,7 @@ t_LAPLACE = r'(?i)laplace'
 t_SHOW = r'(?i)show'
 t_POLT = r'(?i)polt'
 t_POLS = r'(?i)pols'
-#t_VART = 't'
+t_VART = 't'
 t_VARS = 's'
 
 # A regular expression rule with some action code
@@ -65,7 +65,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''9s+3s+61'''
+data = '''laplace(9s+3s+3s^2+61)'''
 
 # Give the lexer some input
 lexer.input(data)
@@ -83,6 +83,20 @@ import ply.yacc as yacc
 
 # Get the token map from the lexer.  This is required.
 #from PLDClex import tokens
+
+#############FUNCTION###############
+def p_function_laplace(p):
+    'function : LAPLACE '
+    p[0] = str(p[1])
+
+def p_function_show(p):
+    'function : SHOW '
+    p[0] = str(p[1])
+
+def p_function(p):
+    'function : function expression'
+    p[0] = str(p[1]) + str(p[2])
+
 
 ############EXPRESSION###############
 def p_expression_plus(p):
@@ -102,12 +116,16 @@ def p_term_times(p):
     'term : factor variable'
     p[0] = str(p[1]) + str(p[2])
 
+def p_term_times3(p):
+    'term : factor variable RAISED factor'
+    p[0] = str(p[1]) + str(p[2]) + '^' + str(p[4])
+
 def p_term_times_2(p):
     'term : factor TIMES variable RAISED factor'
     p[0] = str(p[1]) + '*' + str(p[3]) + '^' + str(p[5])
 
 def p_term_var_exp(p):
-    'term : variable RAISED factor'
+    'term : variable  factor'
     p[0] = str(p[1]) + '^' + str(p[3])
 
 def p_term_var(p):
@@ -141,10 +159,7 @@ def p_exponent(p):
     'exponent : NUMBER'
     p[0] = str(p[1])
 
-#############FUNCTION###############
-def p_function(p):
-    'function : LAPLACE expression'
-    p[0] = str(p[1]) + str(p[2])
+
 
 # Error rule for syntax errors
 def p_error(p):
