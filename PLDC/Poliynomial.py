@@ -14,6 +14,26 @@ class Polynomial(object):
     def degree(self):
         return len(self.coef)-1        
                 
+    #muestra el polinomio en t     
+    def showPolt(self):
+        if self.degree() == 0:
+            return "" + str(self.coef[0])
+        if self.degree() == 1:
+            return str(self.coef[1]) + "t + " + str(self.coef[0])
+        polit = str(self.coef[self.degree()]) + "t^" + str(self.degree())
+        for i in range(self.degree()-1, -1, -1):
+            if self.coef[i] == 0:
+                continue
+            elif self.coef[i] > 0:
+                polit = polit + " + " + str(self.coef[i])
+            elif self.coef[i] < 0:
+                polit = polit + " - " + str(-1*(self.coef[i]))
+            if i == 1:
+                polit = polit + "t"
+            elif i > 1:
+                polit = polit + "t^" + str(i)
+        return polit
+    #encuentra los coeficientes de la transformada de lapalce
     def laplace(self):
         list=[]
         for i in range(0, self.degree()+1):

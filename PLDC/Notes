@@ -28,6 +28,10 @@ term: factor * variable
       variable
       factor
 
+raisedVar: variable RAISED
+
+raisedVarComplete: raisedVar NUMBER
+
 factor: + NUMBER
         - NUMBER
 
