@@ -3,9 +3,7 @@ import ply.lex as lex
 # PLDClex.py - tokenizer
 
 # list of tokens names
-tokens = ('POLT',
-          'POLS',
-          'LAPLACE',
+tokens = ('LAPLACE',
           'SHOW',
           'NUMBER',
           'PLUS',
@@ -17,7 +15,10 @@ tokens = ('POLT',
           'RAISED',
           'VART',
           'VARS',
-          'EQUALS')
+          'EQUALS',
+          'EXPRNAME',
+          'SHOWTEXT',
+          'COMMA')
 
 # reserved words
 reserved = {
@@ -35,16 +36,24 @@ t_RPAREN  = r'\)'
 t_RAISED = r'\^'
 t_LAPLACE = r'(?i)laplace'
 t_SHOW = r'(?i)show'
-t_POLT = r'([A-Za-z]+[0-9]*)+'
-t_POLS = r'/([A-Za-z]+[0-9]*)+'
 t_VART = r't'
 t_VARS = r's'
-t_EQUALS = r'='
+t_EQUALS = r'\='
+t_SHOWTEXT = r'"(.*?)"'
+t_COMMA = r'\,'
 
 # A regular expression rule with some action code
 def t_NUMBER(t):
     r'\d+'
     t.value = int(t.value)
+    return t
+
+def t_EXPRNAME(t):
+    r'(([A-Za-z]+[0-9]+)|([A-Za-z][A-Za-z]+[0-9]*))+'
+    if t.value in 'laplace':
+        t.type = reserved.get(t.value,'ID')
+    if t.value in 'show':
+        t.type = reserved.get(t.value,'ID')
     return t
 
 # Define a rule so we can track line numbers
@@ -67,24 +76,94 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''polynom = 9s^3+3s+61'''
+data = '''show varnam'''
 
 # Give the lexer some input
 lexer.input(data)
 
+
+
+def printtok():
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        print(tok.type, tok.value)
+
 # Tokenize
-#while True:
-tok = lexer.token()
-   # if not tok:
-   #     break      # No more input
-    #print(tok.type, tok.value)
+print data
+#printtok()
+
+
 
 # Yacc test
 
 import ply.yacc as yacc
 
 # Get the token map from the lexer.  This is required.
-#from PLDClex import tokens
+
+#############LangFunctions###############
+def p_langfunctions(p):
+    'langfunction : polynomial'
+    p[0] = str(p[1])
+
+def p_langfunctions1(p):
+    'langfunction : function'
+    p[0] = str(p[1])
+
+def p_langfunctions2(p):
+    'langfunction : exprname'
+    p[0] = str(p[1])
+
+#############POLYNOMIAL###############
+def p_polynomial(p):
+    'polynomial : exprname expression'
+    p[0] = str(p[1]) + str(p[2])
+
+
+#############EXPRESSION NAME###############
+def p_exprname(p):
+    'exprname : EXPRNAME '
+    p[0] = str(p[1])
+
+
+def p_exprname1(p):
+    'exprname : EXPRNAME EQUALS'
+    p[0] = str(p[1]) + str(p[2])
+
+def p_exprname2(p):
+    'exprname : EXPRNAME EQUALS function'
+    p[0] = str(p[1]) + str(p[2]) + str(p[3])
+
+def p_exprname3(p):
+    'exprname : EXPRNAME EQUALS expression'
+    p[0] = str(p[1]) + str(p[2]) + str(p[3])
+
+#############FUNCTION###############
+def p_function(p):
+    'function : LAPLACE expression'
+    p[0] = str(p[1]) + str(p[2])
+
+
+def p_function1(p):
+    'function : LAPLACE LPAREN exprname RPAREN'
+    p[0] = str(p[1]) + '(' + str(p[3]) + ')'
+
+def p_function2(p):
+    'function : SHOW expression'
+    p[0] = str(p[1]) + str(p[2])
+
+def p_function3(p):
+    'function : SHOW exprname '
+    p[0] = str(p[1]) + " " + str(p[2])
+
+def p_function4(p):
+    'function : SHOW SHOWTEXT '
+    p[0] = str(p[1]) +  str(p[2])
+
+def p_function5(p):
+    'function : SHOW LPAREN SHOWTEXT COMMA exprname RPAREN'
+    p[0] = str(p[1]) + '(' + str(p[3]) + ',' + str(p[5]) +')'
 
 ############EXPRESSION###############
 def p_expression_plus(p):
@@ -105,8 +184,8 @@ def p_term_times(p):
     p[0] = str(p[1]) + str(p[2])
 
 def p_term_times_2(p):
-    'term : factor TIMES variable RAISED factor'
-    p[0] = str(p[1]) + '*' + str(p[3]) + '^' + str(p[5])
+    'term : factor  variable RAISED factor'
+    p[0] = str(p[1]) + str(p[2]) + '^' + str(p[4])
 
 def p_term_var_exp(p):
     'term : variable RAISED factor'
@@ -138,39 +217,6 @@ def p_variable_s(p):
     'variable : VARS'
     p[0] = str(p[1])
 
-#############EXPONENT###############
-def p_exponent(p):
-    'exponent : NUMBER'
-    p[0] = str(p[1])
-
-#############FUNCTION###############
-def p_function(p):
-    'function : LAPLACE expression'
-    p[0] = str(p[1]) + str(p[2])
-    
-#############EQUALS###############
-def p_equals(p):
-    'equals: EQUALS'
-    p[0] = str(p[1])
-    
-#############POLYNOMIAL VARIABLE###############
-def p_pol_var_t(p):
-    'pol_var_t: POLT'
-    p[0] = str(p[1])
-    
-def p_pol_var_s(p):
-    'pol_var_s: POLTS'
-    p[0] = str(p[1])
-    
-#############POLYNOMIAL###############
-def p_polynomial_t(p):
-    'polynomial : pol_var_t equals expression'
-    p[0] = str(p[1]) + str(p[2]) + str(p[3])
-    
-def p_polynomial_s(p):
-    'polynomial : pol_var_s equals expression'
-    p[0] = str(p[1]) + str(p[2]) + str(p[3])
-
 # Error rule for syntax errors
 def p_error(p):
     print("Syntax error in input!")
@@ -178,5 +224,6 @@ def p_error(p):
 # Build the parser
 parser = yacc.yacc()
 
+#result = parser.parse(data,debug=1)
 result = parser.parse(data)
 print(result)
