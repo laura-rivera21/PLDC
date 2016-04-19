@@ -9,7 +9,10 @@ Created on Sun Apr 03 08:19:37 2016
 class Polynomial(object):
                     
     def __init__(self,coefi):
+        #coefi est en forma descendente
+        coefi.reverse()
         self.coef=coefi
+        #coef retorna en forma ascendente
        
     def degree(self):
         return len(self.coef)-1        
@@ -33,7 +36,6 @@ class Polynomial(object):
             elif i > 1:
                 polit = polit + "t^" + str(i)
         return polit
-
     #encuentra los coeficientes de la transformada de lapalce
     def laplace(self):
         list=[]
@@ -46,7 +48,7 @@ class Polynomial(object):
                 c.coef[i]=self.coef[i]
             if i>0:
                 new_coef=1
-                for j in range(1, i+1): #calculates the factorial of the nominator
+                for j in range(0, i):
                     new_coef = new_coef*(j+1)  
                 c.coef[i]=self.coef[i]*new_coef
         return c.coef   # estamos retornando solo los coeficientes
@@ -57,13 +59,19 @@ class Polynomial(object):
         
         if self.degree()==0:
             return str(self.laplace())+'/s'
-                    
+        s=''     
         for i in range(0,len(self.laplace())):
+            if self.laplace()[i] == 0:
+                a=''                
             if self.laplace()[i] != 0:
                 if i==0:
                     s=str(self.laplace()[0])+"/s"
                 else:
                      s = s+"+"+str(self.laplace()[i])+  "/s^" + str(i+1)
+        s=s+a
+        s=s.replace('+-','-')   
+        if s[0]=='+':
+            s=s[1:]           
         return s
                 
                 
