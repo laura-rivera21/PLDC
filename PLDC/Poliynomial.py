@@ -33,6 +33,7 @@ class Polynomial(object):
             elif i > 1:
                 polit = polit + "t^" + str(i)
         return polit
+
     #encuentra los coeficientes de la transformada de lapalce
     def laplace(self):
         list=[]
@@ -45,7 +46,7 @@ class Polynomial(object):
                 c.coef[i]=self.coef[i]
             if i>0:
                 new_coef=1
-                for j in range(1, i+1):
+                for j in range(1, i+1): #calculates the factorial of the nominator
                     new_coef = new_coef*(j+1)  
                 c.coef[i]=self.coef[i]*new_coef
         return c.coef   # estamos retornando solo los coeficientes

@@ -3,6 +3,9 @@ import ply.lex as lex
 # PLDClex.py - tokenizer
 
 # list of tokens names
+from Poliynomial import Polynomial
+from coef import coefi
+
 tokens = ('LAPLACE',
           'SHOW',
           'NUMBER',
@@ -76,7 +79,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''show varnam'''
+data = '''varnam = laplace 3t^2+5t+3'''
 
 # Give the lexer some input
 lexer.input(data)
@@ -142,7 +145,9 @@ def p_exprname3(p):
 #############FUNCTION###############
 def p_function(p):
     'function : LAPLACE expression'
-    p[0] = str(p[1]) + str(p[2])
+    pol = Polynomial(coefi(p[2])).show()
+    p[0] = str(pol)
+           #str(p[2])
 
 
 def p_function1(p):

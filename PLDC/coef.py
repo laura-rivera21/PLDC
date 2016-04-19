@@ -32,6 +32,7 @@ def coefi(poli):
         
     newcoef=[0]*(exps[0]+1)      
     p=0
+    #Add 0t to missing terms with exponenets
     for c in exps:                 
         newcoef[exps[0]-c]=coefi[p]
         p+=1

@@ -54,3 +54,10 @@ varnam = laplace(3t^2+t+6)
 varnam = laplace(othervar)
 show varnam
 show ("String thing " varnam)
+
+
+
+1)Method to organize the polynomial
+2)
+3)
+4)
