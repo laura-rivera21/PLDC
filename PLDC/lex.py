@@ -79,7 +79,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''varnam = laplace 3t^2+5t+3'''
+data = '''laplace (lago) '''
 
 # Give the lexer some input
 lexer.input(data)
@@ -97,14 +97,12 @@ def printtok():
 print data
 #printtok()
 
-
-
 # Yacc test
 
 import ply.yacc as yacc
 
 # Get the token map from the lexer.  This is required.
-
+names = {}
 #############LangFunctions###############
 def p_langfunctions(p):
     'langfunction : polynomial'
@@ -129,46 +127,58 @@ def p_exprname(p):
     'exprname : EXPRNAME '
     p[0] = str(p[1])
 
-
 def p_exprname1(p):
-    'exprname : EXPRNAME EQUALS'
-    p[0] = str(p[1]) + str(p[2])
+    'exprname : EXPRNAME EQUALS function'
+    names[p[1]] = p[3]
+    p[0] = p[1]
 
 def p_exprname2(p):
-    'exprname : EXPRNAME EQUALS function'
-    p[0] = str(p[1]) + str(p[2]) + str(p[3])
-
-def p_exprname3(p):
     'exprname : EXPRNAME EQUALS expression'
-    p[0] = str(p[1]) + str(p[2]) + str(p[3])
+    names[p[1]] = p[3]
+    p[0] = p[1]
+
 
 #############FUNCTION###############
 def p_function(p):
     'function : LAPLACE expression'
     pol = Polynomial(coefi(p[2])).show()
-    p[0] = str(pol)
-           #str(p[2])
+    print pol
+    p[0] = pol
+
+def p_function6(p):
+    'function : LAPLACE LPAREN expression RPAREN'
+    p[0] = str(p[1]) + '(' + str(p[3]) + ')'
+    pol = Polynomial(coefi(p[3])).show()
+    print pol
+    p[0] = pol
 
 
 def p_function1(p):
     'function : LAPLACE LPAREN exprname RPAREN'
-    p[0] = str(p[1]) + '(' + str(p[3]) + ')'
+    p[0] = Polynomial(coefi(names[p[3]])).show()
+    print p[0]
 
 def p_function2(p):
     'function : SHOW expression'
     p[0] = str(p[1]) + str(p[2])
+    print p[2]
 
 def p_function3(p):
     'function : SHOW exprname '
     p[0] = str(p[1]) + " " + str(p[2])
+    print names[p[2]]
 
 def p_function4(p):
     'function : SHOW SHOWTEXT '
     p[0] = str(p[1]) +  str(p[2])
+    temp = p[2][1:-1]
+    print temp
 
 def p_function5(p):
     'function : SHOW LPAREN SHOWTEXT COMMA exprname RPAREN'
     p[0] = str(p[1]) + '(' + str(p[3]) + ',' + str(p[5]) +')'
+    temp = p[3][1:-1] + " " + names[p[5]]
+    print temp
 
 ############EXPRESSION###############
 def p_expression_plus(p):
@@ -209,9 +219,9 @@ def p_factor_num(p):
     'factor : NUMBER'
     p[0] = str(p[1])
 
-def p_factor_expr(p):
-    'factor : LPAREN expression RPAREN'
-    p[0] = '(' + str(p[2]) + ')'
+#def p_factor_expr(p):
+#    'factor : LPAREN expression RPAREN'
+#    p[0] = '(' + str(p[2]) + ')'
 
 #############VARIABLE###############
 def p_variable_t(p):
@@ -227,8 +237,15 @@ def p_error(p):
     print("Syntax error in input!")
 
 # Build the parser
-parser = yacc.yacc()
+yacc.yacc()
+
+while True:
+    try:
+        s = raw_input('(+_+) > ')   # use input() on Python 3
+    except EOFError:
+        break
+    yacc.parse(s)
 
 #result = parser.parse(data,debug=1)
-result = parser.parse(data)
-print(result)
+#result = parser.parse(data)
+#print(result)

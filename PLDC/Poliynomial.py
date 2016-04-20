@@ -59,7 +59,8 @@ class Polynomial(object):
         
         if self.degree()==0:
             return str(self.laplace())+'/s'
-        s=''     
+        s=''
+        a=''
         for i in range(0,len(self.laplace())):
             if self.laplace()[i] == 0:
                 a=''                
