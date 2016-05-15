@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="PLDC : Polynomial Laplace Dominion Converter">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>PLDC</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/laura-rivera21/PLDC">View on GitHub</a>
+
+          <h1 id="project_title">PLDC</h1>
+          <h2 id="project_tagline">Polynomial Laplace Dominion Converter</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/laura-rivera21/PLDC/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/laura-rivera21/PLDC/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a id="welcome-to-pldc-webpage" class="anchor" href="#welcome-to-pldc-webpage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to PLDC Webpage</h3>
+
+<p>PLDC is a programming language that provides an easy format to use for converting polynomials to its Laplace transform. The user inputs a polynomial equation and apply the command “Laplace”, it receives the conversion in terms of t or s domain. Users are also able to print the expressions and their results in the terminal window. We developed PLDC having in mind that our primary users for this language will be Electrical Engineering students, but anyone learning the Laplace transform theory can use this language to their convenience.</p>
+
+<h3>
+<a id="pldc-syntax-example" class="anchor" href="#pldc-syntax-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PLDC Syntax Example</h3>
+
+<pre><code>//Create expression in t or s domain
+    tExpressionName = 2t^4
+    sExpressionName = 5s^3+1s
+
+//Assign result of transform to variable
+    result1 = laplace(tExpressionName)
+    result2 = laplace(2t^4)
+    result3 = laplace(sExpressionName)
+    result4 = laplace sExpressionName
+    result5 = laplace 5s^2-2s+s
+
+//Display result in terminal
+    show result1
+    show “Result of expression in S domain is: ” resultS
+</code></pre>
+
+<h3>
+<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+
+<p>PLDC was developed by Melvin Vega (<a href="https://github.com/melvinvega" class="user-mention">@melvinvega</a>) Velcy Palomino (<a href="https://github.com/velcy" class="user-mention">@velcy</a>) and Laura Rivera (<a href="https://github.com/laura-rivera21" class="user-mention">@laura-rivera21</a>) for the Programming Languages course at the University of Puerto Rico Mayaguez Campus</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">PLDC maintained by <a href="https://github.com/laura-rivera21">laura-rivera21</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
