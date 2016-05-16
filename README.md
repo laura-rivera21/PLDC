@@ -13,7 +13,7 @@
 
 <h3>Example of Program</h3>
 ```
-  //Create expression in t or s domain
+//Create expression in t or s domain
     tExpressionName = 2t^4
     sExpressionName = 5s^3+1s
 
