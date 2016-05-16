@@ -47,6 +47,7 @@ t_COMMA = r'\,'
 
 # A regular expression rule with some action code
 def t_NUMBER(t):
+    #r'-?\d+'
     r'\d+'
     t.value = int(t.value)
     return t
@@ -79,10 +80,10 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''laplace (lago) '''
+#data = '''laplace (lago) '''
 
 # Give the lexer some input
-lexer.input(data)
+#lexer.input(data)
 
 
 
@@ -94,7 +95,7 @@ def printtok():
         print(tok.type, tok.value)
 
 # Tokenize
-print data
+#print data
 #printtok()
 
 # Yacc test
@@ -137,19 +138,22 @@ def p_exprname2(p):
     names[p[1]] = p[3]
     p[0] = p[1]
 
-
+def p_exprname3(p):
+    'exprname : EXPRNAME EQUALS EXPRNAME'
+    names[p[1]] = names[p[3]]
+    p[0] = p[1]
 #############FUNCTION###############
 def p_function(p):
     'function : LAPLACE expression'
     pol = Polynomial(coefi(p[2])).show()
-    print pol
+    #print pol
     p[0] = pol
 
 def p_function6(p):
     'function : LAPLACE LPAREN expression RPAREN'
     p[0] = str(p[1]) + '(' + str(p[3]) + ')'
     pol = Polynomial(coefi(p[3])).show()
-    print pol
+    #print pol
     p[0] = pol
 
 
@@ -179,6 +183,8 @@ def p_function5(p):
     p[0] = str(p[1]) + '(' + str(p[3]) + ',' + str(p[5]) +')'
     temp = p[3][1:-1] + " " + names[p[5]]
     print temp
+
+
 
 ############EXPRESSION###############
 def p_expression_plus(p):
