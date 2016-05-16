@@ -14,16 +14,17 @@
 <h3>Example of Program</h3>
 ```
   //Create expression in t or s domain
-  Polt tExpressionName = 2t^4			
-  Pols sExpressionName = 5/s^3+1/s	
-  //Create t or s domain expression variable
-  Polt resultT			
-  Pols resultS			
-  //Assign result of transform to variable
-  resultS = laplace(tExpressionName)	
-  	resultS = laplace(2t^4)			
-  resultT = laplace(sExpressionName)
-  //Display result in terminal
-  show resultT				
-  show “Result of expression in S domain is: ” resultS
+    tExpressionName = 2t^4
+    sExpressionName = 5s^3+1s
+
+//Assign result of transform to variable
+    result1 = laplace(tExpressionName)
+    result2 = laplace(2t^4)
+    result3 = laplace(sExpressionName)
+    result4 = laplace sExpressionName
+    result5 = laplace 5s^2-2s+s
+
+//Display result in terminal
+    show result1
+    show “Result of expression in S domain is: ” result1
 ```
