@@ -26,5 +26,5 @@
 
 //Display result in terminal
     show result1
-    show “Result of expression in S domain is: ” result1
+    show (“Result of expression in S domain is: ”, result1)
 ```
