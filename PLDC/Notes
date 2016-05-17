@@ -52,12 +52,10 @@ Tests:
 varnam = 3t^2+t+6
 varnam = laplace(3t^2+t+6)
 varnam = laplace(othervar)
+varnam = othervar
+laplace(3t^2+t+6)
+laplace(varname)
 show varnam
 show ("String thing " varnam)
 
 
-
-1)Method to organize the polynomial
-2)
-3)
-4)
