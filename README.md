@@ -13,18 +13,18 @@
 
 <h3>Example of Program</h3>
 ```
-//Create expression in t or s domain
+#Create expression in t or s domain
     tExpressionName = 2t^4
     sExpressionName = 5s^3+1s
 
-//Assign result of transform to variable
+#Assign result of transform to variable
     result1 = laplace(tExpressionName)
     result2 = laplace(2t^4)
     result3 = laplace(sExpressionName)
     result4 = laplace sExpressionName
     result5 = laplace 5s^2-2s+s
 
-//Display result in terminal
+#Display result in terminal
     show result1
     show (“Result of expression in S domain is: ”, result1)
 ```
